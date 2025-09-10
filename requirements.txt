@@ -36,7 +36,7 @@ python-dateutil==2.9.0.post0
 pytz==2025.2
 qrcode==8.0
 redis==6.4.0
-requests==2.32.3
+requests==2.32.4
 six==1.17.0
 sqlparse==0.5.3
 tinycss2==1.4.0
