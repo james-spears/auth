@@ -1,10 +1,12 @@
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.db import models
+from django.db.models.signals import post_save  # new
+from django.dispatch import receiver  # new
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from app.models import SlugModel, UUIDModel
+from app.models import Model, SlugModel, UUIDModel
 from app.utils import unique_name, unique_slugify
 
 
@@ -46,6 +48,8 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = None
+    first_name = None
+    last_name = None
     email = models.EmailField(
         _("email address"), unique=True)
     USERNAME_FIELD = 'email'
@@ -82,11 +86,6 @@ class Team(SlugModel):
 
     memberships = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Membership')
 
-    def save(self, *args, **kwargs):
-        self.slug = self.slug or unique_slugify(
-            self, self.name)
-        super().save(*args, **kwargs)
-
 
 class Membership(UUIDModel):
     permissions = models.ManyToManyField(
@@ -107,24 +106,22 @@ class Membership(UUIDModel):
 # class Principal(UUIDModel):
 #     entitlements = models.ManyToManyField(Entitlement, related_name="principals")
 
-# class Profile(SlugModel):  # new
-#     user = models.OneToOneField(
-#
-#     )
-#     # add additional fields for Profile
 
-#     first_name = models.CharField(max_length=100)
+class Profile(Model):  # new
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    # add additional fields for Profile
 
-#     last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
 
-#     def __str__(self):
-#         return f"Profile | {str(self.user)}"
+    last_name = models.CharField(max_length=100)
 
-#     # class Meta:
-#     #     verbose_name = _("User Profile")
-#     #     verbose_name_plural = _("User Profiles")
+    def __str__(self):
+        return f"Profile | {str(self.user)}"
 
 
-# @receiver(post_save, sender=User)  # new
-# def create_or_update_user_profile(sender, instance, created, **kwargs):
-#     Profile.objects.get_or_create(user=instance)
+@receiver(post_save, sender=User)  # new
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    Profile.objects.get_or_create(user=instance)

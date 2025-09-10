@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Team, Membership
+from .models import User, Team, Membership, Profile
 from .forms import CustomAuthenticationForm, CustomContentTypeAdminForm
 
 admin.site.login_form = CustomAuthenticationForm
@@ -20,8 +20,6 @@ class CustomUserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
-                    "first_name",
-                    "last_name",
                     "password1",
                     "password2"
                 ),
@@ -30,8 +28,6 @@ class CustomUserAdmin(UserAdmin):
     )
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Personal info", {
-         "fields": ("first_name", "last_name")}),
         (
             "Permissions",
             {
@@ -63,6 +59,7 @@ class MemeberModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Permission)
+admin.site.register(Profile)
 
 
 @admin.register(ContentType)
