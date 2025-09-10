@@ -1,0 +1,73 @@
+services:
+  app-www:
+    # image: ghcr.io/app/web/www:main
+    build: www
+    #container_name: www
+    hostname: www
+    volumes:
+      - static-files:/var/www/app.com/static/
+    ports:
+      - 8080:8080
+    depends_on:
+      - app-app
+    networks:
+      - www-net
+
+  app-app:
+    # image: ghcr.io/app/web/app:main
+    build: .
+    #container_name: app
+    hostname: app
+    # ports:
+    #   - 8000:8000
+    volumes:
+      - static-files:/var/www/app.com/static/
+    environment:
+      DEBUG: 0
+      LOG: 0
+      DATABASE_HOST: app-db
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_USERNAME: ${DATABASE_USER:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      DATABASE_NAME: ${DATABASE_PASSWORD:-postgres}
+    depends_on:
+      - db
+    networks:
+      - www-net
+
+  # mq:
+  #   image: rabbitmq:4-management
+  #   container_name: mq
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   volumes:
+  #     - mq-data:/var/lib/rabbitmq
+
+  app-db:
+    # container_name: db
+    # hostname: db
+    image: postgres:17.5
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - db-data:/var/lib/postgresql
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    networks:
+      - www-net
+
+volumes:
+  db-data:
+    driver: local
+  static-files:
+    driver: local
+  # mq-data:
+  #   driver: local
+
+networks:
+  www-net:
+    name: www-net
+    driver: bridge

@@ -1,0 +1,100 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+/* @plugin "@tailwindcss/forms"; */
+
+html, body {
+  height: 100%;
+}
+
+:root {
+  --scroll-primary: rgba(102, 51, 153, 0);
+  --scroll-secondary: rgba(142, 144, 146, 0.603);
+}
+
+[x-cloak] { display: none !important; }
+
+@theme {
+  --animate-faint-pulse: var(--animate-pulse);
+  @keyframes faint-pulse {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.95;
+    }
+  }
+  --animate-back-and-forth: back-and-forth 500s linear infinite;
+  @keyframes back-and-forth {
+    0%,
+    100% {
+      transform: translateY(-100px);
+    }
+    50% {
+      transform: translateY(300px);
+    }
+  }
+  --animate-forth-and-back: forth-and-back 500s linear infinite;
+  @keyframes forth-and-back {
+    0%,
+    100% {
+      transform: translateY(300px);
+    }
+    50% {
+      transform: translateY(0px);
+    }
+  }
+  --font-sans: var(--font-sans);
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
+  --color-primary-950: var(--color-primary-950);
+
+  --color-secondary-50: var(--color-secondary-50);
+  --color-secondary-100: var(--color-secondary-100);
+  --color-secondary-200: var(--color-secondary-200);
+  --color-secondary-300: var(--color-secondary-300);
+  --color-secondary-400: var(--color-secondary-400);
+  --color-secondary-500: var(--color-secondary-500);
+  --color-secondary-600: var(--color-secondary-600);
+  --color-secondary-700: var(--color-secondary-700);
+  --color-secondary-800: var(--color-secondary-800);
+  --color-secondary-900: var(--color-secondary-900);
+  --color-secondary-950: var(--color-secondary-950);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-primary);
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-secondary);
+  border-radius: 14px;
+  border: 4px solid var(--scroll-primary);
+}
+
+::-webkit-datetime-edit-second-field {
+  background: #fff;
+  color: transparent;
+  margin-left: -3px;
+  position: absolute;
+  width: 1px;
+}
+
+.ql-align-center {
+  display: flex;
+  justify-content: center;
+}

@@ -1,0 +1,134 @@
+{% extends "_layouts/detail_view.html" %} 
+
+{% block model_content %}
+<div>
+  <div>
+    <nav class="sm:hidden" aria-label="Back">
+      <a href="#" class="flex items-center text-xs font-medium text-gray-500 hover:text-gray-700">
+        <svg class="mr-1 -ml-1 size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+          <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+        </svg>
+        Back
+      </a>
+    </nav>
+    <nav class="hidden sm:flex" aria-label="Breadcrumb">
+      <ol role="list" class="flex items-center space-x-2">
+        <li>
+          <div class="flex">
+            <a href="{% url 'dashboard' %}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+            <a href="{% url 'team_list' %}" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">Team List</a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+            <a href="#" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">{{ view.title }}</a>
+          </div>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="mt-8 mb-4 md:flex md:items-center md:justify-between">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-2xl font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">{{ view.title }}</h2>
+    </div>
+    <div class="sm:mt-4 flex shrink-0 md:mt-0 md:ml-4">
+      <a href="{% url 'member_create' team.slug %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-primary-600 shadow-xs hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Invite Member</a>
+      <a href="{% url 'team_update' team.slug %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Edit</a>
+      {% include '_partials/ask_ai.html' %}
+    </div>
+  </div>
+</div>
+
+<div class="mb-6">
+  <div class="grid grid-cols-1 sm:hidden">
+    <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+    <select aria-label="Select a tab" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600">
+      {% comment %} <option>My Event</option>
+      <option>Company</option> {% endcomment %}
+      <option selected>My Team</option>
+      <option>Members</option>
+    </select>
+    <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">
+      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+  </div>
+  <div class="hidden sm:block">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <!-- Current: "border-primary-500 text-primary-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+        {% comment %} <a href="#" class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">My Event</a>
+        <a href="#" class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">Company</a> {% endcomment %}
+        <a href="#" class="border-b-2 border-primary-500 px-1 py-4 text-sm font-medium whitespace-nowrap text-primary-600" aria-current="page">My Team</a>
+        <a href="{% url 'member_list' team.slug %}" class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">Members</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div>
+    <h3 class="text-base/7 font-semibold text-gray-900">Team Information</h3>
+    <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">View details about your team here.</p>
+  </div>
+  <div class="mt-6 border-t border-gray-100">
+    <dl class="divide-y divide-gray-100">
+      <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm/6 font-medium text-gray-900">Name</dt>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.name }}</dd>
+      </div>
+      {% comment %} <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm/6 font-medium text-gray-900">Registered / Max. Tickets</dt>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"> {{ view.tickets_registered }} / {{ team.max_units }}</dd>
+      </div>
+      <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm/6 font-medium text-gray-900">Max. Tickets Per Registrant</dt>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.max_units_per_member }}</dd>
+      </div> {% endcomment %}
+      <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm/6 font-medium text-gray-900">Members</dt>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ team.member_set.all|length }}</dd>
+      </div>
+      {% comment %} <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm/6 font-medium text-gray-900">Members</dt>
+        <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+          {% if team.member_set.all  %}
+          <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
+          {% for member in team.member_set.all %}
+            <li class="first:rounded-t-md last:rounded-b-md hover:inset-ring-1 hover:inset-ring-primary-400 active:inset-ring-2 active:inset-ring-primary-500">
+              <a href="{{ member.get_absolute_url }}">
+                <div class="flex items-center justify-between py-4 pr-5 pl-4 text-sm/6">
+                  <div class="flex w-0 flex-1 items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                    </svg>
+                    <div class="ml-4 flex flex-col min-w-0 flex-1 gap-1">
+                      <div class="flex">
+                        <span class="truncate font-medium">{{ member.name }}</span>
+                      </div>
+                      <span class="shrink-0 text-xs text-gray-400">${{ member.price }}/unit - Registrants: {{ member.registrant_set.all|length }}</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          {% endfor %}
+          </ul>
+          {% else  %}
+            <p class="mt-2 text-sm text-gray-500">There are currently no records to dispaly. Go to "Create Product" to create a member.</p>
+          {% endif  %}
+        </dd>
+      </div> {% endcomment %}
+    </dl>
+</div>
+{% endblock model_content %}

@@ -1,0 +1,14 @@
+{% extends "_layouts/sidebar.html" %}
+
+{% block title %}{{ view.title }}{% endblock title %}
+
+{% block sidebar_content %}
+{% comment %} {% include '_partials/header.html' %} {% endcomment %}
+<div class="p-10 pt-4">
+  <div class="mb-4 max-w-full mx-auto overflow-hidden">
+    {% block model_content %}
+    {% endblock model_content %}
+  </div>
+</div>
+  
+{% endblock sidebar_content %}

@@ -1,0 +1,22 @@
+{% extends "_layouts/base.html" %}
+
+{% block base_content %}
+<main class="grid min-h-full max-w-2xl m-auto place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+  <div class="text-center">
+    <p class="text-base font-semibold text-primary-600">Welcome Back!</p>
+    <h1 class="mt-4 text-balance text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">You're now logged in</h1>
+    <p class="mt-6 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">Click below to sign out</p>
+    <div class="mt-10 flex items-center justify-center gap-x-6">
+      {% comment %} <a href="{% url 'home' %}" class="rounded-md bg-primary-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Go back home</a> {% endcomment %}
+      <a href="#" class="text-sm font-semibold text-gray-900">
+        <form class="hover:bg-gray-100 rounded-md" action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button class="cursor-pointer block px-4 py-2 text-sm text-gray-700 w-[100%] flex justify-start" type="submit">
+            <span>Log Out </span>
+          </button>
+        </form>
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}

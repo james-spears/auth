@@ -1,0 +1,161 @@
+<!-- templates/profile.html-->
+{% extends "_layouts/list_view.html" %} 
+
+{% block heading_content %}
+<div>
+  <div>
+    <nav class="sm:hidden" aria-label="Back">
+      <a href="#" class="flex items-center text-xs font-medium text-gray-500 hover:text-gray-700">
+        <svg class="mr-1 -ml-1 size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+          <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+        </svg>
+        Back
+      </a>
+    </nav>
+    <nav class="hidden sm:flex" aria-label="Breadcrumb">
+      <ol role="list" class="flex items-center space-x-2">
+        <li>
+          <div class="flex">
+            <a href="{% url 'dashboard' %}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+            <a href="{% url 'team_list' %}" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">Team List</a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="size-5 shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+            <a href="#" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">Member List</a>
+          </div>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="mt-8 mb-4 md:flex md:items-center md:justify-between">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-2xl font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">{{ view.title }}</h2>
+    </div>
+    <div class="sm:mt-4 flex shrink-0 md:mt-0 md:ml-4">
+      <a href="{% url 'member_create' team.slug %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-primary-600 shadow-xs hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Invite Member</a>
+      {% comment %} <a href="{% url 'member_create' team.slug %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Create</a> {% endcomment %}
+      {% include '_partials/ask_ai.html' %}
+    </div>
+  </div>
+</div>
+
+<div class="mb-6">
+  <div class="grid grid-cols-1 sm:hidden">
+    <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+    <select aria-label="Select a tab" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600">
+      {% comment %} <option>My Event</option>
+      <option>Company</option> {% endcomment %}
+      <option>My Team</option>
+      <option selected>Members</option>
+    </select>
+    <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">
+      <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+  </div>
+  <div class="hidden sm:block">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <!-- Current: "border-primary-500 text-primary-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+        {% comment %} <a href="#" class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">My Event</a>
+        <a href="#" class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">Company</a> {% endcomment %}
+        <a href="{% url 'team_detail' team.slug %}"  class="border-b-2 border-transparent px-1 py-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700">My Team</a>
+        <a href="#" class="border-b-2 border-primary-500 px-1 py-4 text-sm font-medium whitespace-nowrap text-primary-600" aria-current="page">Members</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h3 class="text-base/7 font-semibold text-gray-900">All Members</h3>
+  <p class="mt-1 max-w-2xl text-sm/6 text-gray-500"> A pageable view of all Members belonging to your Team.</p>
+</div>
+{% endblock heading_content %}
+
+{% block list_items %}
+      {% for object in object_list %}
+      {% comment %} <p>{{ object.organization.name }} / {{ object.name }}</p> {% endcomment %}
+        <li class="relative flex justify-between gap-x-6 py-5">
+          <div class="flex min-w-0 gap-x-4">
+            {% comment %} <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" class="size-12 flex-none rounded-full bg-gray-50" /> {% endcomment %}
+            <div class="min-w-0 flex-auto">
+              <p class="text-sm/6 font-semibold text-gray-900">
+                <a href="{{ object.get_absolute_url }}">
+                  <span class="absolute inset-x-0 -top-px bottom-0"></span>
+                  {{ object.email }}
+                </a>
+              </p>
+              <p class="mt-1 flex text-xs/5 text-gray-500">
+                Created: &nbsp; <time datetime="{{ object.created_at }}">{{ object.created_at }}</time>
+                {% comment %} <a href="mailto:tom.cook@example.com" class="relative truncate hover:underline">tom.cook@example.com</a> {% endcomment %}
+              </p>
+            </div>
+          </div>
+          <div class="flex shrink-0 items-center gap-x-4">
+            <div class="hidden sm:flex sm:flex-col sm:items-end">
+              {% comment %} <p class="text-sm/6 text-gray-900">
+                {{ object.product_set.all | length }}
+                {% if object.product_set.all|length >= 1 %}
+                Product
+                {% else %}
+                Products
+                {% endif %}
+              </p> {% endcomment %}
+              <div class="mt-1 flex items-center gap-x-1.5">
+                <div class="flex-none rounded-full bg-emerald-500/20 p-1">
+                  <div class="size-1.5 rounded-full bg-emerald-500"></div>
+                </div>
+                <p class="text-xs/5 text-gray-500">{{ object.state }}</p>
+              </div>
+            </div>
+            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 flex-none text-gray-400">
+              <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+          </div>
+        </li>
+      {% endfor %}
+
+      {% comment %} {% for object in object_list %}
+          {% include '_partials/list_item.html' with name=object.name description=object.gates|length|stringformat:"s"|add:" Gates" model_name=view.model_name only %}
+      {% endfor %} {% endcomment %}
+{% endblock list_items %}
+
+{% block head_content %}
+  <tr>
+    <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0">Member</th>
+    <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">Permissions</th>
+    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+    {% comment %} <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-0">
+      <span class="sr-only">Edit</span>
+    </th> {% endcomment %}
+  </tr>
+{% endblock head_content %}
+
+{% block row_content %}
+        {% if object_list  %}
+        {% for object in object_list %}
+          <tr>
+            <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-0">
+              <a href="{{ object.get_absolute_url }}" aria-current="page" class="text-sm font-medium text-primary-600 hover:text-primary-800">{{ object.email }}</a>
+            </td>
+            <td class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell">{{ object.permissions.all|length }}</td>
+            <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ object.state }}</td>
+            <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
+              <a href="{% url 'member_update' team.slug object.slug %}" class="text-primary-600 hover:text-primary-900">Edit<span class="sr-only"> Member, {{ object.email }}</span></a>
+            </td>
+          </tr>
+        {% endfor %}
+        {% else  %}
+        <p class="mt-2 text-sm text-gray-500">There are currently no records to dispaly. Invite a member to your team.</p>
+        {% endif  %}
+{% endblock row_content %}
