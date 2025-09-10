@@ -103,9 +103,6 @@ class Membership(UUIDModel):
     def __str__(self):
         return f"{self.team} | {self.holder}"
 
-# class Principal(UUIDModel):
-#     entitlements = models.ManyToManyField(Entitlement, related_name="principals")
-
 
 class Profile(Model):  # new
     user = models.OneToOneField(

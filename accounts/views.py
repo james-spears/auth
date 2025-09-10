@@ -42,12 +42,7 @@ class BaseView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/index.html"
 
 
-class AuthenticatedView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        return render(request, '200.html', {})
-
-
-class AuthorizedView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class AuthView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = []
 
     def get_permission_required(self) -> list[str]:
