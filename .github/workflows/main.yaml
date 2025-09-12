@@ -125,6 +125,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm' # Cache npm dependencies
+          cache-dependency-path: './api/package-lock.json'
       - name: Install dependencies
         run: npm ci # Use npm ci for clean installations based on package-lock.json
         working-directory: ./api
