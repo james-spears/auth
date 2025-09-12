@@ -54,7 +54,11 @@ services:
       - 3000:3000
     networks:
       - www-net
-
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SALT: ${SALT}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
   app:
     image: nginx:latest
     hostname: app

@@ -5,7 +5,6 @@ WORKDIR /opt/app
 
 # Install app dependencies
 COPY package*.json ./
-COPY ./.env ./.env
 COPY ./dist ./dist
 
 RUN npm ci --omit=dev
