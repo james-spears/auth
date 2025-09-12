@@ -7,13 +7,7 @@ import {
 import { Request } from 'express';
 import crypto from 'node:crypto';
 import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
-
-const client = new Redis({
-  port: 6379, // Redis port
-  host: 'cache', // Redis host
-  db: 1, // Defaults to 0
-});
+import { CacheService } from '../cache/cache.service';
 
 function validateSignature(
   message: string,
@@ -42,7 +36,10 @@ function validateSignature(
 @Injectable()
 export class AuthGuard implements CanActivate {
   private readonly logger = new Logger(AuthGuard.name);
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private cacheService: CacheService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -63,7 +60,9 @@ export class AuthGuard implements CanActivate {
       this.logger.error('multiple authorization keys found');
       return false;
     }
-    const signedMessage = await client.get(`:1:${xAuthorizationKey}` as string);
+    const signedMessage = await this.cacheService.client.get(
+      `:1:${xAuthorizationKey}` as string,
+    );
     this.logger.verbose(`signedMessage: ${signedMessage}`);
     if (!signedMessage) {
       this.logger.error('signed message not in cache');
