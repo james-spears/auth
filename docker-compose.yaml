@@ -1,31 +1,34 @@
 services:
-  app-www:
-    # image: ghcr.io/app/web/www:main
+  www:
+    # image: ghcr.io/auth/web/www:main
     build: www
     #container_name: www
     hostname: www
     volumes:
-      - static-files:/var/www/app.com/static/
+      - static-files:/var/www/com/static/
     ports:
       - 8080:8080
     depends_on:
-      - app-app
+      - auth
     networks:
       - www-net
 
-  app-app:
-    # image: ghcr.io/app/web/app:main
+  auth:
+    # image: ghcr.io/auth/web/auth:main
     build: .
-    #container_name: app
-    hostname: app
-    # ports:
-    #   - 8000:8000
+    #container_name: auth
+    hostname: auth
+    ports:
+      - 8000:8000
     volumes:
-      - static-files:/var/www/app.com/static/
+      - static-files:/var/www/com/static/
     environment:
       DEBUG: 0
       LOG: 0
-      DATABASE_HOST: app-db
+      SECRET_KEY: ${SECRET_KEY}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      DATABASE_HOST: db
       DATABASE_PORT: ${DATABASE_PORT:-5432}
       DATABASE_USERNAME: ${DATABASE_USER:-postgres}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
@@ -35,6 +38,28 @@ services:
     networks:
       - www-net
 
+  cache:
+    image: redis:latest # Or specify a version like redis:7.0-alpine
+    hostname: cache
+    ports:
+      - 6379:6379
+    networks:
+      - www-net
+    restart: always
+
+  api:
+    build: api
+    hostname: api
+    ports:
+      - 3000:3000
+    networks:
+      - www-net
+
+  app:
+    image: nginx:latest
+    hostname: app
+    networks:
+      - www-net
   # mq:
   #   image: rabbitmq:4-management
   #   container_name: mq
@@ -44,7 +69,7 @@ services:
   #   volumes:
   #     - mq-data:/var/lib/rabbitmq
 
-  app-db:
+  db:
     # container_name: db
     # hostname: db
     image: postgres:17.5

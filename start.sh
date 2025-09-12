@@ -9,8 +9,8 @@ case ${RUN_MODE} in
         ./install-tailwind.sh
         ./tailwindcss -i ./styles.css -o ./static/css/main.css -m
         python manage.py collectstatic --noinput
-        find /var/www/fastinvites.com -type d -exec chmod 755 {} \;
-        find /var/www/fastinvites.com -type f -exec chmod 644 {} \;
+        find /var/www/com -type d -exec chmod 755 {} \;
+        find /var/www/com -type f -exec chmod 644 {} \;
         gunicorn -b 0.0.0.0:8000 app.wsgi
         # python manage.py runserver 0.0.0.0:8000
         ;;

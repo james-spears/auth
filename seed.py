@@ -15,7 +15,8 @@ for content_type in content_types:
             name=f"{operation} {
                 content_type.model}", content_type=content_type, codename=f"{
                 content_type.app_label}_{operation}_{
-                content_type.model}")
+                content_type.model}"
+        )
 
 # Setup Groups
 

@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ["SECRET_KEY"]
+SIGNER_SALT = "himalayan_pink"
 HOST_DOMAIN = os.getenv("HOST_DOMAIN", None)
 ALLOWED_HOSTS = [HOST_DOMAIN] if HOST_DOMAIN else []
 
@@ -137,11 +138,21 @@ DATABASES = {
     }
 }
 
+X_AUTHORIZATION_KEY = 'x_authorization_key'
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
-    }
+        "LOCATION": "redis://cache:6379/0",
+    },
+    'auth': {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://cache:6379/1",
+        "OPTIONS": {
+            "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -177,14 +188,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 if DEBUG:
     STATIC_ROOT = 'assets'
 else:
-    STATIC_ROOT = "/var/www/auth/static/"
+    STATIC_ROOT = "/var/www/com/static/"
 
 STATIC_URL = "static/"
 
@@ -225,10 +235,10 @@ APPEND_SLASH = True
 
 # Adjust if RabbitMQ is not on localhost
 CELERY_BROKER_URL = os.getenv(
-    "CELERY_BROKER_URL", 'amqp://guest:guest@localhost:5672//')
+    "CELERY_BROKER_URL", 'amqp://guest:guest@mq:5672//')
 # using redis as a results backend
 CELERY_RESULT_BACKEND = os.getenv(
-    "CELERY_RESULT_BACKEND", 'redis://localhost:6379/0')
+    "CELERY_RESULT_BACKEND", 'redis://cache:6379/2')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -248,3 +258,10 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ]
+}

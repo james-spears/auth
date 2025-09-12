@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("accounts.urls"), name="accounts"),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("auth/", views.AuthView.as_view(), name="auth"),
     path("", views.RootView.as_view()),
     # accounts/login/ [name='login']
     # accounts/logout/ [name='logout']
@@ -42,4 +43,4 @@ if settings.DEBUG:
 
 admin.site.site_header = "Admin"
 admin.site.site_title = "Admin Portal"
-admin.site.index_title = "Welcome to the Portal!"
+admin.site.index_title = "Welcome to the Admin Portal!"

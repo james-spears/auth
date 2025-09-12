@@ -5,9 +5,7 @@ from django.dispatch import receiver  # new
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from app.models import Model, SlugModel, UUIDModel
-from app.utils import unique_name, unique_slugify
 
 
 class UserManager(BaseUserManager):
@@ -55,29 +53,6 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects: UserManager = UserManager()
-
-    def has_perm(self, perm, obj=None):
-        # Implement your custom permission logic here
-        # For example, check if the user is a superuser or has a specific role
-        # if self.is_superuser:
-        #     return True
-        # # Add other custom checks
-        if ' ' in perm:
-            team_slug, model, codename = perm.split()
-
-            try:
-                membership = self.memberships.get(team__slug=team_slug)
-            except ObjectDoesNotExist:
-                return False
-
-            try:
-                permission = membership.permissions.get(codename=codename, content_type__model=model)
-            except ObjectDoesNotExist:
-                return False
-
-            if permission:
-                return True
-        return super().has_perm(perm, obj)
 
 
 class Team(SlugModel):
