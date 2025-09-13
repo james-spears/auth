@@ -139,15 +139,15 @@ DATABASES = {
 }
 
 X_AUTHORIZATION_KEY = 'x_authorization_key'
-
+CACHE_HOST = "localhost" if DEBUG else "localhost"
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://cache:6379/0",
+        "LOCATION": f"redis://{CACHE_HOST}:6379/0",
     },
     'auth': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://cache:6379/1",
+        "LOCATION": f"redis://{CACHE_HOST}:6379/1",
         "OPTIONS": {
             "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -238,7 +238,7 @@ CELERY_BROKER_URL = os.getenv(
     "CELERY_BROKER_URL", 'amqp://guest:guest@mq:5672//')
 # using redis as a results backend
 CELERY_RESULT_BACKEND = os.getenv(
-    "CELERY_RESULT_BACKEND", 'redis://cache:6379/2')
+    "CELERY_RESULT_BACKEND", f'redis://{CACHE_HOST}:6379/2')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

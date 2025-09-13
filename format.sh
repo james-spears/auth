@@ -1,1 +1,1 @@
-python -m autopep8 --exclude='*/migrations/*' --in-place --recursive . 
+python -m autopep8 --exclude='*/migrations/*,api/*' --in-place --recursive . 

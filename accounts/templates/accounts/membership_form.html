@@ -1,9 +1,9 @@
-{% extends "_layouts/sidebar.html" %}
-
-{% block sidebar_content %}
+{% extends "_layouts/base.html" %}
+{% load startswith %}
+{% block base_content %}
 {% comment %} {% include '_partials/header.html' %} {% endcomment %}
 {% comment %} <h1>{{ view.title }}</h1> {% endcomment %}
-<div class="p-10 pt-4">
+<div class="p-10 pt-4" x-data="{}">
     <div class="mb-4 max-w-full mx-auto overflow-hidden">
       <div>
         <div>
@@ -19,7 +19,7 @@
             <ol role="list" class="flex items-center space-x-2">
               <li>
                 <div class="flex">
-                  <a href="{% url 'dashboard' %}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
+                  <a href="#" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
                 </div>
               </li>
               <li>
@@ -53,31 +53,40 @@
           <div class="min-w-0 flex-1">
             <h2 class="text-2xl font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">{{ view.title }}</h2>
           </div>
-          <div class="sm:mt-4 flex shrink-0 md:mt-0 md:ml-4">
+          <div class="mt-6 flex items-center justify-end gap-x-6">
             {% comment %} <a href="{{ view.create_url }}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Create</a> {% endcomment %}
-            {% include '_partials/ask_ai.html' %}
+            {% comment %} {% include '_partials/ask_ai.html' %} {% endcomment %}
+            <a href="{{ view.cancel_url }}" type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</a>
+            <button x-on:click="$refs.myForm.submit()" type="submit" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
           </div>
         </div>
       </div>
       <div class="flex flex-col lg:flex-row">
         <div class="mb-6 w-full lg:w-1/3 flex-inherit">
-            <h3 class="text-base/7 font-semibold text-gray-900">Event Permissions</h3>
-            <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Permission related to Event Models.</p>
+            <h3 class="text-base/7 font-semibold text-gray-900">Permissions</h3>
+            <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Permission related to Models.</p>
         </div>
-        <form method="POST" enctype="multipart/form-data" class="grow">
+        <form x-ref="myForm" method="POST" enctype="multipart/form-data" class="grow">
             <!-- Security token -->
             {% csrf_token %}
-
             {% for field in form %}
-            <div class="space-y-6 border-gray-100 pb-6 sm:space-y-0 sm:divide-y sm:divide-gray-100 sm:border-t sm:border-t-gray-100 sm:pb-0">
-            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-4">
-                <label for="{{ field.id_for_label }}" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5 my-2">{{ field.label }}</label>
-                <div class="mt-2 sm:col-span-2 sm:mt-0">
-                {{ field }}
-                </div>
-            </div>
-            </div>
+              <fieldset class="mb-6">
+                  <legend class="block text-md font-bold text-gray-900 sm:pt-1.5 my-2">{{ field.label }} {{ content.permissions|title }}</legend>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0">
+                  {{ field }}
+                  </div>
+              </fieldset>
             {% endfor %}
+            {% comment %} {% for field in form %}
+            <div class="space-y-6 border-gray-100 pb-6 sm:space-y-0 sm:divide-y sm:divide-gray-100 sm:border-t sm:border-t-gray-100 sm:pb-0">
+              <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-4">
+                  <label for="{{ field.id_for_label }}" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5 my-2">{{ field.label }}</label>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0">
+                  {{ field }}
+                  </div>
+              </div>
+            </div>
+            {% endfor %} {% endcomment %}
             <div class="mt-6 flex items-center justify-end gap-x-6">
             <a href="{{ view.cancel_url }}" type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</a>
             <button type="submit" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
@@ -86,4 +95,4 @@
       </div>
     </div>
 </div>
-{% endblock sidebar_content %}
+{% endblock base_content %}

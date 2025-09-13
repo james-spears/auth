@@ -15,7 +15,7 @@
       <ol role="list" class="flex items-center space-x-2">
         <li>
           <div class="flex">
-            <a href="{% url 'dashboard' %}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
+            <a href="#" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
           </div>
         </li>
         <li>
@@ -50,8 +50,8 @@
       <h2 class="text-2xl font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">{{ view.title }}</h2>
     </div>
     <div class="sm:mt-4 flex shrink-0 md:mt-0 md:ml-4">
-      <a href="{% url 'member_update' team.slug member.slug %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Edit</a>
-      {% include '_partials/ask_ai.html' %}
+      <a href="{% url 'membership_update' team.slug membership.uuid %}" type="button" class="mr-3 my-6 sm:my-0 inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Edit</a>
+      {% comment %} {% include '_partials/ask_ai.html' %} {% endcomment %}
     </div>
   </div>
 </div>
@@ -65,26 +65,26 @@
     <dl class="divide-y divide-gray-100">
       <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Name</dt>
-        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.email }}</dd>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.email }}</dd>
       </div>
       {% comment %} <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Registered / Max. Tickets</dt>
-        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"> {{ view.tickets_registered }} / {{ member.max_units }}</dd>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"> {{ view.tickets_registered }} / {{ membership.max_units }}</dd>
       </div>
       <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Max. Tickets Per Registrant</dt>
-        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.max_units_per_permission }}</dd>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.max_units_per_permission }}</dd>
       </div> {% endcomment %}
       {% comment %} <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Payment Integration</dt>
-        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ member.payment_integration }}</dd>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.payment_integration }}</dd>
       </div> {% endcomment %}
       <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Event Permissions</dt>
         <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          {% if member.permissions.all  %}
+          {% if membership.permissions.all  %}
           <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
-          {% for permission in member.get_event_permissions.all %}
+          {% for permission in membership.permissions.all %}
             <li class="first:rounded-t-md last:rounded-b-md">
                 <div class="flex items-center justify-between py-4 pr-5 pl-4 text-sm/6">
                   <div class="flex w-0 flex-1 items-center">

@@ -2,6 +2,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.db import models
 from django.db.models.signals import post_save  # new
 from django.dispatch import receiver  # new
+from django.urls import reverse
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -59,7 +60,15 @@ class Team(SlugModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, related_name='teams')
 
-    memberships = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Membership')
+    memberships = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='Membership',
+        through_fields=(
+            'team',
+            'holder'))
+
+    def get_absolute_url(self):
+        return reverse("team_detail", kwargs={'team_slug': self.slug})
 
 
 class Membership(UUIDModel):
@@ -69,11 +78,29 @@ class Membership(UUIDModel):
         blank=True,
     )
 
+    email = models.EmailField(_("Email Address"))
+
+    invited_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.CASCADE, related_name='invitations')
+
+    class State(models.TextChoices):
+        PENDING = "P", _("Pending")
+        ACCEPTED = "A", _("Accepted")
+
+    status = models.CharField(
+        max_length=1,
+        choices=State,
+        default=State.PENDING,
+    )
+
     holder = models.ForeignKey(settings.AUTH_USER_MODEL,
                                on_delete=models.CASCADE, related_name='memberships')
 
     team = models.ForeignKey(Team,
                              on_delete=models.CASCADE, related_name='members')
+
+    def get_absolute_url(self):
+        return reverse("membership_detail", kwargs={'membership_uuid': self.uuid, 'team_slug': self.team.slug})
 
     def __str__(self):
         return f"{self.team} | {self.holder}"

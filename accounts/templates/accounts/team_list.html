@@ -16,7 +16,7 @@
       <ol role="list" class="flex items-center space-x-2">
         <li>
           <div class="flex">
-            <a href="{% url 'dashboard' %}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
+            <a href="#" class="text-xs font-medium text-gray-500 hover:text-gray-700">Home</a>
           </div>
         </li>
         <li>
@@ -114,7 +114,7 @@
               <a href="{{ object.get_absolute_url }}" aria-current="page" class="text-sm font-medium text-primary-600 hover:text-primary-800">{{ object.name }}</a>
             </td>
             <td class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell">{{ object.created_at }}</td>
-            <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ object.member_set.all|length }}</td>
+            <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ object.memberships.all|length }}</td>
             <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
               <a href="{% url 'team_detail' object.slug %}" class="text-primary-600 hover:text-primary-900">Edit<span class="sr-only">, {{ object.name }}</span></a>
             </td>

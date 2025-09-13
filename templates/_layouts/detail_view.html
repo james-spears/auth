@@ -1,8 +1,8 @@
-{% extends "_layouts/sidebar.html" %}
+{% extends "_layouts/base.html" %}
 
 {% block title %}{{ view.title }}{% endblock title %}
 
-{% block sidebar_content %}
+{% block base_content %}
 {% comment %} {% include '_partials/header.html' %} {% endcomment %}
 <div class="p-10 pt-4">
   <div class="mb-4 max-w-full mx-auto overflow-hidden">
@@ -11,4 +11,4 @@
   </div>
 </div>
   
-{% endblock sidebar_content %}
+{% endblock base_content %}
