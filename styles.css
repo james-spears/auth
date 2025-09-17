@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); */
 @import 'tailwindcss';
 /* @plugin "@tailwindcss/forms"; */
 
@@ -97,4 +98,8 @@ html, body {
 .ql-align-center {
   display: flex;
   justify-content: center;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--color-primary-600);
 }

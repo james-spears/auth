@@ -1,0 +1,14 @@
+{% load i18n %}{% autoescape off %}
+{% blocktranslate %}Hi! You're receiving this email because you signed up for a user account at {{ site_name }}.{% endblocktranslate %}
+
+{% translate "Please go to the following page to confirm your email address:" %}
+{% block confirm_link %}
+{{ protocol }}://{{ domain }}{% url 'email_confirm' uidb64=uid token=token %}
+{% endblock %}
+{% comment %} {% translate 'In case you’ve forgotten, you are:' %} {{ user.get_username }} {% endcomment %}
+
+{% translate "Thanks for using our site!" %}
+
+{% blocktranslate %}The {{ site_name }} team{% endblocktranslate %}
+
+{% endautoescape %}

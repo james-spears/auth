@@ -3,9 +3,10 @@ from django.db import models
 from django.db.models.signals import post_save  # new
 from django.dispatch import receiver  # new
 from django.urls import reverse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from app.models import Model, SlugModel, UUIDModel
 
 
@@ -55,6 +56,32 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     objects: UserManager = UserManager()
 
+    is_verified = models.BooleanField(_("verified"),
+                                      default=False,
+                                      help_text=_(
+                                          "Designates that this user has verified their email address."
+    ))
+
+    def has_perm(self, perm, obj=None):
+        # Implement your custom permission logic here
+        # For example, check if the user is a superuser or has a specific role
+        # if self.is_superuser:
+        #     return True
+        # # Add other custom checks
+        if ' ' in perm:
+            try:
+                team_slug, model, codename = perm.split()
+                membership = self.memberships.get(team__slug=team_slug)  # type: ignore
+                permission = membership.permissions.get(
+                    codename=codename, content_type__model=model)
+                if permission:
+                    return True
+            except ObjectDoesNotExist:
+                return False
+            except ValueError:
+                return False
+        return super().has_perm(perm, obj)
+
 
 class Team(SlugModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -72,6 +99,16 @@ class Team(SlugModel):
 
 
 class Membership(UUIDModel):
+    class Meta:
+        ordering = ['email']
+        unique_together = ('email', 'team')
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_("groups"),
+        blank=True,
+    )
+
     permissions = models.ManyToManyField(
         Permission,
         verbose_name=_("permissions"),
@@ -83,18 +120,18 @@ class Membership(UUIDModel):
     invited_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.CASCADE, related_name='invitations')
 
-    class State(models.TextChoices):
+    class Status(models.TextChoices):
         PENDING = "P", _("Pending")
         ACCEPTED = "A", _("Accepted")
 
     status = models.CharField(
         max_length=1,
-        choices=State,
-        default=State.PENDING,
+        choices=Status,
+        default=Status.PENDING,
     )
 
     holder = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE, related_name='memberships')
+                               on_delete=models.CASCADE, related_name='memberships', blank=True, null=True)
 
     team = models.ForeignKey(Team,
                              on_delete=models.CASCADE, related_name='members')

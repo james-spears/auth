@@ -2,12 +2,15 @@ from django import forms
 from django.contrib.auth import forms as auth
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 from django.forms import widgets
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.forms import ModelForm, ModelMultipleChoiceField, EmailInput
 from app.forms import FORM_CLASS
 from .models import Team, Membership
+
+User = get_user_model()
 
 INPUT_CLASS = "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
 
@@ -30,7 +33,7 @@ class CustomAuthenticationForm(auth.AuthenticationForm):
 
 class CustomUserCreationForm(auth.UserCreationForm):
     class Meta():
-        model = get_user_model()
+        model = User
         fields = ['email']
 
     email = forms.EmailField(
@@ -123,13 +126,14 @@ class MembershipForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         # Get distinct content_types from your related model
-        content_types = ContentType.objects.all().distinct()
-
-        for content_type in content_types:
+        self.content_types = ContentType.objects.filter(app_label="external").distinct().order_by('model')
+        permissions = Permission.objects.filter(codename__startswith="external")
+        # permissions = Permission.objects.filter(codename__startswith="external")
+        # print(len(permissions))
+        for content_type in self.content_types:
             # Create a separate field for each content_type
             field_name = content_type.model
-            queryset = Permission.objects.filter(content_type=content_type)
-
+            queryset = permissions.filter(content_type=content_type)
             self.fields[field_name] = CustomModelMultipleChoiceField(
                 queryset=queryset,
                 required=False,
@@ -139,18 +143,22 @@ class MembershipForm(ModelForm):
 
             self.fields[field_name].initial = self.instance.permissions.filter(content_type=content_type)
 
-    def clean(self):
-        # Call the parent's clean method to ensure default validation runs
-        val = super().clean()
-        print(val, self.is_valid(), self.errors)
+    groups = CustomModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        widget=widgets.CheckboxSelectMultiple(
+            attrs={
+                "class": "mt-1 mr-2 space-y-2"})
+    )
 
     def save(self, commit=True):
         # Get the instance without saving it to the database yet
         instance = super().save(commit=False)
-        content_types = ContentType.objects.all().distinct()
+        # content_types = ContentType.objects.all().distinct().order_by('model')
 
         permissions = []
-        for content_type in content_types:
+        for content_type in self.content_types:
+            # queryset = Permission.objects.filter(content_type=content_type, codename__startswith="external")
+            # if content_type.model in self.cleaned_data:
             permissions += list(self.cleaned_data[content_type.model])
 
         instance.permissions.set(permissions)

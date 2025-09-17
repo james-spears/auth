@@ -20,6 +20,7 @@ class CustomUserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
+                    "is_verified",
                     "password1",
                     "password2"
                 ),
@@ -35,6 +36,7 @@ class CustomUserAdmin(UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
+                    "is_verified",
                     "groups",
                     "user_permissions",
                 ),
@@ -52,9 +54,9 @@ class TeamModelAdmin(admin.ModelAdmin):
 
 @admin.register(Membership)
 class MemeberModelAdmin(admin.ModelAdmin):
-    filter_horizontal = ('permissions',)
+    filter_horizontal = ('permissions', 'groups')
     fieldsets = (
-        (None, {"fields": ("holder", "team", "permissions", "deleted")}),
+        (None, {"fields": ("holder", "team", "groups", "permissions", "deleted")}),
     )
 
 
