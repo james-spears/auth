@@ -1,21 +1,24 @@
 from logging import getLogger
 from typing import cast
 from django.db.models.base import Model as Model
+from django.http.response import HttpResponse as HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, RedirectView
 from django.contrib.auth.views import PasswordResetView, LoginView, PasswordResetConfirmView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import DetailView, CreateView, UpdateView, ListView
+from django.views.generic import DetailView, CreateView, UpdateView, ListView, FormView
 from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponseRedirect
+from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode
 from django.core.signing import Signer
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from app.mixins import PaginatedMixin
-from django.contrib.contenttypes.models import ContentType
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm, TeamForm, MembershipForm, MembershipInvitationForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm, TeamForm, MembershipForm, MembershipInvitationForm, EmailVerificationForm
 from .models import Team, Membership
 
 User = get_user_model()
@@ -214,3 +217,55 @@ class MembershipUpdateView(LoginRequiredMixin, UpdateView):
             kwargs={
                 'membership_uuid': cast(Membership, self.get_object()).uuid,
                 'team_slug': self.kwargs['team_slug']})
+
+
+class EmailVerificationView(LoginRequiredMixin, FormView):
+    form_class = EmailVerificationForm
+    email_template_name = "registration/email_verification_email.html"
+    extra_email_context = None
+    from_email = None
+    html_email_template_name = None
+    subject_template_name = "registration/email_verification_subject.txt"
+    # success_url = reverse_lazy("email_verification_done")
+    template_name = "registration/email_verification_form.html"
+    title = _("Email Verification")
+    token_generator = default_token_generator
+
+    title = _("Email Verification")
+
+    success_url = '/accounts/'
+
+    def get_success_url(self) -> str:
+        return cast(str, self.success_url)
+
+    def form_valid(self, form):
+        form.user = self.request.user
+        opts = {
+            "use_https": self.request.is_secure(),
+            "token_generator": self.token_generator,
+            "from_email": self.from_email,
+            "email_template_name": self.email_template_name,
+            "subject_template_name": self.subject_template_name,
+            "request": self.request,
+            "html_email_template_name": self.html_email_template_name,
+            "extra_email_context": self.extra_email_context,
+        }
+        self.object = form.save(**opts)
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class EmailVerificationCompleteView(LoginRequiredMixin, RedirectView):
+    url = "/accounts/"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        print(self.request.GET)
+        if kwargs['uidb64'] and kwargs['token']:
+            # pk = urlsafe_base64_decode(kwargs['uidb64']).decode('utf-8')
+            token = kwargs['token']
+            if not default_token_generator.check_token(self.request.user, token):
+                raise PermissionDenied()
+            self.request.user.is_email_verified = True  # type: ignore
+            self.request.user.save()
+            return super().get(request, *args, **kwargs)
+        else:
+            raise PermissionDenied()

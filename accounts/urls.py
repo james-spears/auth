@@ -15,6 +15,16 @@ urlpatterns = [
         views.CustomPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    path(
+        "verify_email/",
+        views.EmailVerificationView.as_view(),
+        name="verify_email",
+    ),
+    path(
+        "verify_email_complete/<uidb64>/<token>",
+        views.EmailVerificationCompleteView.as_view(),
+        name="verify_email_complete",
+    ),
     path("", views.BaseView.as_view(), name="accounts"),
     #     path(
     #         "profile/",

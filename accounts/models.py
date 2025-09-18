@@ -1,9 +1,11 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.db import models
 from django.db.models.signals import post_save  # new
 from django.dispatch import receiver  # new
 from django.urls import reverse
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -52,15 +54,16 @@ class User(AbstractUser):
     last_name = None
     email = models.EmailField(
         _("email address"), unique=True)
+    is_email_verified = models.BooleanField(
+        _("verified"),
+        default=False,
+        help_text=_(
+            "Designates whether this user's email has been verified."
+        ),
+    )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects: UserManager = UserManager()
-
-    is_verified = models.BooleanField(_("verified"),
-                                      default=False,
-                                      help_text=_(
-                                          "Designates that this user has verified their email address."
-    ))
 
     def has_perm(self, perm, obj=None):
         # Implement your custom permission logic here
@@ -155,3 +158,8 @@ class Profile(Model):  # new
 @receiver(post_save, sender=User)  # new
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     Profile.objects.get_or_create(user=instance)
+
+
+def get_expiry():
+    # Calculate a datetime 2 weeks and 3 hours from now
+    return timezone.now() + timedelta(hours=12)

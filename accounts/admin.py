@@ -20,7 +20,7 @@ class CustomUserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
-                    "is_verified",
+                    "is_email_verified",
                     "password1",
                     "password2"
                 ),
@@ -36,7 +36,7 @@ class CustomUserAdmin(UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
-                    "is_verified",
+                    "is_email_verified",
                     "groups",
                     "user_permissions",
                 ),
