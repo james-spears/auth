@@ -2,10 +2,9 @@ from django import forms
 from django.contrib.auth import forms as auth
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 from django.forms import widgets
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group
 from django.forms import ModelForm, ModelMultipleChoiceField, EmailInput
 from app.forms import FORM_CLASS
 from .models import Team, Membership
@@ -120,60 +119,10 @@ class CustomModelMultipleChoiceField(ModelMultipleChoiceField):
 class MembershipForm(ModelForm):
     class Meta:
         model = Membership
-        fields = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Get distinct content_types from your related model
-        self.content_types = ContentType.objects.filter(app_label="external").distinct().order_by('model')
-        permissions = Permission.objects.filter(codename__startswith="external")
-        # permissions = Permission.objects.filter(codename__startswith="external")
-        # print(len(permissions))
-        for content_type in self.content_types:
-            # Create a separate field for each content_type
-            field_name = content_type.model
-            queryset = permissions.filter(content_type=content_type)
-            self.fields[field_name] = CustomModelMultipleChoiceField(
-                queryset=queryset,
-                required=False,
-                widget=widgets.CheckboxSelectMultiple(
-                    attrs={
-                        "class": "mt-1 mr-2 space-y-2"}))
-
-            self.fields[field_name].initial = self.instance.permissions.filter(content_type=content_type)
-
+        fields = ['groups']
     groups = CustomModelMultipleChoiceField(
         queryset=Group.objects.all(),
         widget=widgets.CheckboxSelectMultiple(
             attrs={
-                "class": "mt-1 mr-2 space-y-2"})
-    )
-
-    def save(self, commit=True):
-        # Get the instance without saving it to the database yet
-        instance = super().save(commit=False)
-        # content_types = ContentType.objects.all().distinct().order_by('model')
-
-        permissions = []
-        for content_type in self.content_types:
-            # queryset = Permission.objects.filter(content_type=content_type, codename__startswith="external")
-            # if content_type.model in self.cleaned_data:
-            permissions += list(self.cleaned_data[content_type.model])
-
-        instance.permissions.set(permissions)
-
-        # Save the instance to the database if commit is True
-        if commit:
-            instance.save()
-            # If you have ManyToMany fields and commit=False was used
-            # you need to call save_m2m() manually after saving the instance
-            self.save_m2m()
-
-        return instance
-    # permissions = CustomModelMultipleChoiceField(
-    #     queryset=Permission.objects.filter(codename__startswith="external"),
-    #     widget=widgets.CheckboxSelectMultiple(
-    #         attrs={
-    #             "class": "mt-1 mr-2 space-y-2",
-    #             "placeholder": "Permissions"}))
+                "class": "mt-1 mr-2 space-y-2",
+                "placeholder": "Groups"}))

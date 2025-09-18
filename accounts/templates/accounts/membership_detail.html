@@ -73,21 +73,19 @@
       </div>
       {% comment %}<div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Max. Tickets Per Registrant</dt>
-        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.max_units_per_permission }}</dd>
+        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.max_units_per_group }}</dd>
       </div> {% endcomment %}
       {% comment %} <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
         <dt class="text-sm/6 font-medium text-gray-900">Payment Integration</dt>
         <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{ membership.payment_integration }}</dd>
       </div> {% endcomment %}
       <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-        <dt class="text-sm/6 font-medium text-gray-900">Permissions</dt>
+        <dt class="text-sm/6 font-medium text-gray-900">Groups</dt>
         <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          {% if membership.permissions.all  %}
-          {% regroup membership.permissions.all by content_type as content_type_list %}
-          {% for content_type in content_type_list %}
-          <div class="block text-md font-bold text-gray-900 sm:pt-1.5 mb-2">{{ content_type.grouper|title }} Permissions</div>
-          <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200 my-4">
-            {% for permission in content_type.list %}
+          {% if membership.groups.all  %}
+          {% comment %} <div class="block text-md font-bold text-gray-900 sm:pt-1.5 mb-2">Groups</div> {% endcomment %}
+          <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
+            {% for group in membership.groups.all %}
               <li class="first:rounded-t-md last:rounded-b-md">
                 <div class="flex items-center justify-between py-4 pr-5 pl-4 text-sm/6">
                   <div class="flex w-0 flex-1 items-center">
@@ -98,24 +96,23 @@
                     </div>
                     <div class="ml-4 flex flex-col min-w-0 flex-1 gap-1">
                       <div class="flex">
-                        <span class="truncate font-medium">{{ permission.name|title }}</span>
+                        <span class="truncate font-medium">{{ group.name|title }}</span>
                         {% comment %} <p class="mt-0.5 ml-2 rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-blue-700 ring-1 ring-blue-600/20 ring-inset">Published</p> {% endcomment %}
                       </div>
-                      {% comment %} <span class="shrink-0 text-xs text-gray-400">${{ permission.price }}/unit - Registrants: {{ permission.registrant_set.all|length }}</span> {% endcomment %}
+                      {% comment %} <span class="shrink-0 text-xs text-gray-400">${{ group.price }}/unit - Registrants: {{ group.registrant_set.all|length }}</span> {% endcomment %}
                     </div>
                   </div>
                 </div>
               </li>
             {% endfor %}
           </ul>
-          {% endfor %}
           {% else  %}
-            <p class="mt-2 text-sm text-gray-500">This memeber has no permissions. Click "Edit" to add permissions.</p>
+            <p class="mt-2 text-sm text-gray-500">This memeber has no groups. Click "Edit" to add groups.</p>
           {% endif  %}
         </dd>
       </div>
     </dl>
-    {% comment %} {% regroup membership.permissions.all by content_type as content_type_list %}
+    {% comment %} {% regroup membership.groups.all by content_type as content_type_list %}
 
     <ul>
     {% for content_type in content_type_list %}

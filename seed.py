@@ -41,4 +41,4 @@ for i in range(len(users)):
         if i != j:
             membership = Membership.objects.create(
                 email=users[j].email, invited_by=users[i], team=team, holder=users[j])
-            membership.permissions.set(read_only.permissions.all() if j % 2 == 0 else admin.permissions.all())
+            membership.groups.set([read_only, manager] if j % 2 == 0 else [admin])

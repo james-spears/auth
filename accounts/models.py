@@ -109,12 +109,6 @@ class Membership(UUIDModel):
         blank=True,
     )
 
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name=_("permissions"),
-        blank=True,
-    )
-
     email = models.EmailField(_("Email Address"))
 
     invited_by = models.ForeignKey(settings.AUTH_USER_MODEL,

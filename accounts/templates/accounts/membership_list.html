@@ -133,7 +133,7 @@
 {% block head_content %}
   <tr>
     <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-0">Member</th>
-    <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">Permissions</th>
+    <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">Groups</th>
     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
     {% comment %} <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-0">
       <span class="sr-only">Edit</span>
@@ -148,7 +148,7 @@
             <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-0">
               <a href="{{ object.get_absolute_url }}" aria-current="page" class="text-sm font-medium text-primary-600 hover:text-primary-800">{{ object.email }}</a>
             </td>
-            <td class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell">{{ object.permissions.all|length }}</td>
+            <td class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell">{{ object.groups.all|length }}</td>
             <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ object.status }}</td>
             <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
               <a href="{% url 'membership_update' team.slug object.uuid %}" class="text-primary-600 hover:text-primary-900">Edit<span class="sr-only"> Member, {{ object.email }}</span></a>

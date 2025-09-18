@@ -54,9 +54,9 @@ class TeamModelAdmin(admin.ModelAdmin):
 
 @admin.register(Membership)
 class MemeberModelAdmin(admin.ModelAdmin):
-    filter_horizontal = ('permissions', 'groups')
+    filter_horizontal = ('groups',)
     fieldsets = (
-        (None, {"fields": ("holder", "team", "groups", "permissions", "deleted")}),
+        (None, {"fields": ("holder", "team", "groups", "deleted")}),
     )
 
 

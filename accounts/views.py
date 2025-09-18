@@ -122,7 +122,7 @@ class MembershipListView(LoginRequiredMixin, PaginatedMixin, ListView):
 
     def get_queryset(self):
         self.team = get_object_or_404(Team, owner=self.request.user, slug=self.kwargs['team_slug'])
-        return super().get_queryset().filter(team=self.team).prefetch_related('team', 'permissions')
+        return super().get_queryset().filter(team=self.team).prefetch_related('team', 'groups')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -141,7 +141,7 @@ class MembershipDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         self.team = get_object_or_404(Team, owner=self.request.user, slug=self.kwargs['team_slug'])
-        return super().get_queryset().prefetch_related('permissions__content_type')
+        return super().get_queryset().prefetch_related('groups')
 
     # def tickets_registered(self):
     #     return sum(map(lambda registrant: registrant.num_of_units, self.get_object().registrant_set.all()))
@@ -194,7 +194,7 @@ class MembershipUpdateView(LoginRequiredMixin, UpdateView):
     slug_url_kwarg = 'membership_uuid'
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related('team', 'permissions__content_type')
+        return super().get_queryset().prefetch_related('team', 'groups')
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
